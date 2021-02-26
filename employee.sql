@@ -21,5 +21,17 @@ id INT AUTO_INCREMENT NOT NULL,
 first_name VARCHAR(30) NOT NULL,
 last_name VARCHAR (30) NOT NULL,
 role_id INT,
+manager_id INT,
 PRIMARY KEY (id)
 );
+
+
+-- seeds --
+INSERT INTO department (name)
+VALUES ("accounting"), ("marketing");
+
+INSERT INTO role (title, salary, dept_id)
+VALUES ("senior manager", "30000", 2), ("CFO", "70000", 1);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ("Martha", "Morrison", 12, 1), ("Ben", "Jammin", 45, 1);

@@ -21,7 +21,6 @@ function init() {
 }
 
 // ask for departments, roles, employees;
-
 function start() {
   inquirer
     .prompt({
@@ -31,7 +30,6 @@ function start() {
       choices: ["ADD", "VIEW", "UPDATE", "EXIT"],
     })
     .then(function (answer) {
-      console.log(answer);
       if (answer.start === "ADD") {
         add();
       } else if (answer.start === "VIEW") {
@@ -165,9 +163,83 @@ function addemployee() {
     });
 }
 
-//view departments, roles, employees
+//view departments function
+function view() {
+  inquirer
+    .prompt({
+      name: "viewitem",
+      type: "list",
+      message: "Would you like to view departments, roles, or employees?",
+      choices: ["DEPARTMENT", "ROLE", "EMPLOYEE"],
+    })
+    .then(function (answer) {
+      console.log(answer);
+      if (answer.viewitem === "DEPARTMENT") {
+        viewdept();
+      } else if (answer.viewitem === "ROLE") {
+        viewrole();
+      } else {
+        viewemployee();
+      }
+    });
+}
+//view department - select all from department table
 function viewdept() {
-  console.log("");
+  console.log("Viewing departments");
+  connection.query("SELECT * FROM department", (err, res) => {
+    if (err) throw err;
+    console.log(res);
+    start();
+  });
+}
+//view roles - select only title from roles table
+function viewrole() {
+  console.log("Viewing roles");
+  connection.query("SELECT title FROM role", (err, res) => {
+    if (err) throw err;
+    console.log(res);
+    start();
+  });
+}
+//view employee - select first and last name columns from employee table
+function viewemployee() {
+  console.log("You are viewing employees");
+  connection.query("SELECT first_name, last_name FROM employee", (err, res) => {
+    if (err) throw err;
+    console.log(res);
+    start();
+  });
 }
 
-//update employee roles
+// update employee roles -
+//which employee id ?, then what is the new role id to replace the current?
+function update() {
+  inquirer
+    .prompt([
+      {
+        name: "updateitem",
+        type: "input",
+        message: "What employee Id do you want to update?",
+      },
+      {
+        name: "updateid",
+        type: "input",
+        message: "What new role Id do you want to use?",
+      },
+    ])
+    .then(function (answer) {
+      console.log(`You are updating employee id #: ${answer.updateitem}.`);
+      console.log(answer);
+      //query table for first_name, last_name, role_id
+      //update table - ? is a placeholder
+      const query = "UPDATE employee SET role_id = ? WHERE id = ?";
+      connection.query(
+        query,
+        [parseInt(answer.updateid), parseInt(answer.updateitem)],
+        (err, res) => {
+          console.log(res);
+        }
+      );
+      start();
+    });
+}
